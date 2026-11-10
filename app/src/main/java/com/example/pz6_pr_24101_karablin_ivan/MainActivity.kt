@@ -1,5 +1,7 @@
 package com.example.pz6_pr_24101_karablin_ivan
 
+import android.content.res.Configuration
+import android.hardware.camera2.params.ColorSpaceTransform
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -41,17 +44,27 @@ class MainActivity : ComponentActivity() {
         val testCompose = mutableStateOf(0)
         val forceUpdate = mutableStateOf(0)
         setContent {
-            AllFromLections(counter = counter, onCounterChanges = {counter.value++},
-            checked = checked, onCheckedChanges = {newCheckState -> checked.value = newCheckState}
-            ,testCompose = testCompose, onTestCompose = {
-                    if (testCompose.value < 5) {
-                        testCompose.value++
-                    } else {
-                        testCompose.value = 5
-                        forceUpdate.value++
-                    }
-                }, forceUpdate = forceUpdate)
+            Pz6pr24101karablinivanTheme() {
+                Surface (modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                    AllFromLections(
+                        counter = counter,
+                        onCounterChanges = { counter.value++ },
+                        checked = checked,
+                        onCheckedChanges = { newCheckState -> checked.value = newCheckState },
+                        testCompose = testCompose,
+                        onTestCompose = {
+                            if (testCompose.value < 5) {
+                                testCompose.value++
+                            } else {
+                                testCompose.value = 5
+                                forceUpdate.value++
+                            }
+                        },
+                        forceUpdate = forceUpdate
+                    )
+                }
 
+            }
         }
     }
 }
@@ -83,95 +96,130 @@ fun AllFromLections(
 
     Column (modifier = Modifier
         .padding(16.dp)){
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(
-                checked = checkboxViewCounterDeleagate,
-                onCheckedChange = { checkboxViewCounterDeleagate = it })
-            Text(text= "Счётчик из Activity")
-            if (checkboxViewCounterDeleagate) {
+        Text(
+            text = "Практическая работа 6",
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(bottom = 16.dp).align(Alignment.CenterHorizontally)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Surface(
+            color = MaterialTheme.colorScheme.surface,
+            shape = MaterialTheme.shapes.medium,
+            modifier = Modifier.fillMaxWidth().padding(vertical =4.dp),
+            tonalElevation = 2.dp
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(
+                    checked = checkboxViewCounterDeleagate,
+                    onCheckedChange = { checkboxViewCounterDeleagate = it })
+                Text(text = "Счётчик из Activity")
+                if (checkboxViewCounterDeleagate) {
 
-                Text(
-                    text = "[Клик +1 $counterValue]",
-                    modifier = Modifier.clickable(onClick = onCounterChanges)
-                )
+                    Text(
+                        text = "[Клик +1 $counterValue]",
+                        modifier = Modifier.clickable(onClick = onCounterChanges),
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Surface(
+            color = MaterialTheme.colorScheme.surface,
+            shape = MaterialTheme.shapes.medium,
+            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+            tonalElevation = 2.dp
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
 
-            Checkbox(checked = checkedValue, onCheckedChange = onCheckedChanges)
-            Text(text = "Счётчик из 10 задания")
-            if (checkedValue) {
-                Text(
-                    text = "[Клик +1 $counterDelegate]",
-                    modifier = Modifier.clickable(onClick = { counterDelegate++ })
-                )
+                Checkbox(checked = checkedValue, onCheckedChange = onCheckedChanges)
+                Text(text = "Счётчик из 10 задания")
+                if (checkedValue) {
+                    Text(
+                        text = "[Клик +1 $counterDelegate]",
+                        modifier = Modifier.clickable(
+                            onClick = { counterDelegate++ },
+                        ), color = MaterialTheme.colorScheme.tertiary
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(value = textField, onValueChange = {textField = it}, modifier = Modifier.padding(start = 12.dp) )
+
+        OutlinedTextField(value = textField, onValueChange = {textField = it},)
         Spacer(modifier = Modifier.height(8.dp))
         Log.d("TEST", "AllFromLections (forceUpdate = $forceUpdateValue)")
-        TestCompose(composeTest =  testCompose, onComposeTest =  onTestCompose)
+        TestCompose(composeTest =  testComposeValue, onComposeTest =  onTestCompose)
         Spacer(modifier = Modifier.height(8.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(checked = logicalVariable, onCheckedChange = {logicalVariable = it})
-            Text(text = "Перевод введённого текста в верхний регистр")
+        Surface (
+            color = MaterialTheme.colorScheme.surface,
+            shape = MaterialTheme.shapes.medium,
+            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+            tonalElevation = 2.dp
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(checked = logicalVariable, onCheckedChange = { logicalVariable = it })
+                Text(text = "isUppercase")
+            }
         }
+
         Spacer(modifier = Modifier.height(8.dp))
             Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(value = text, onValueChange = { text = it },modifier = Modifier.padding(start = 12.dp))
+            OutlinedTextField(value = text, onValueChange = { text = it },)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = classTest.returnMessage(text),modifier = Modifier.padding(start = 12.dp))
-
-
-
-
-
-
-
-
-
+            Text(text = classTest.returnMessage(text),)
 
     }
 }
 
 @Composable
-fun TestCompose (composeTest:State<Int>,
+fun TestCompose (composeTest: Int,
                  onComposeTest: ()-> Unit) {
 
-    val composeTestValue = composeTest.value
+
 
     Log.d("TEST", "TestCompose")
 
-    Text(text="Счётчик $composeTestValue",modifier = Modifier.clickable(onClick = onComposeTest).padding(start = 12.dp))
+    Text(text="Счётчик $composeTest",modifier = Modifier.clickable(onClick = onComposeTest).padding(start = 12.dp))
 }
 
-@Preview
+@Preview(
+    name = "Light Mode"
+)
+@Preview(
+    name = "Dark Mode",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES 
+)
 @Composable
 fun PreviewAllFromLections(){
     val counter = remember {mutableStateOf(0)}
     val checked =remember{ mutableStateOf(false)}
     val testCompose = remember{mutableStateOf(0)}
     val forceUpdate = remember {  mutableStateOf(0)}
-    Surface (modifier = Modifier.fillMaxSize()) {
-        AllFromLections(
-            counter = counter,
-            onCounterChanges = { counter.value++ },
-            checked = checked,
-            onCheckedChanges = { newCheckState -> checked.value = newCheckState },
-            testCompose = testCompose,
-            onTestCompose = {
-                if (testCompose.value < 5) {
-                    testCompose.value++
-                } else {
-                    testCompose.value = 5
-                    forceUpdate.value++
-                }
-            },
-            forceUpdate = forceUpdate
-        )
+    Pz6pr24101karablinivanTheme() {
+        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+            AllFromLections(
+                counter = counter,
+                onCounterChanges = { counter.value++ },
+                checked = checked,
+                onCheckedChanges = { newCheckState -> checked.value = newCheckState },
+                testCompose = testCompose,
+                onTestCompose = {
+                    if (testCompose.value < 5) {
+                        testCompose.value++
+                    } else {
+                        testCompose.value = 5
+                        forceUpdate.value++
+                    }
+                },
+                forceUpdate = forceUpdate
+            )
+        }
     }
+
+
 
 }
 class Message(private val isUppercase: Boolean){
